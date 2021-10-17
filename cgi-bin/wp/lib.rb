@@ -10,7 +10,7 @@ def url(path)
 end
 
 def save_message(name, message)
-  return false if name.nil? || message.nil?
+  return false if name.empty? || message.empty?
 
   File.open(File.expand_path(BBS_DATA, __dir__), 'a') do |f|
     f.print([Time.now.to_s, name, message].to_csv)
