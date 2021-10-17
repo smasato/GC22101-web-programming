@@ -7,7 +7,8 @@ require_relative 'lib'
 
 cgi = CGI.new
 
-message = if save_message(cgi['name'], cgi['message'])
+message = if cgi.request_method == 'POST' &&
+             save_message(cgi['name'], cgi['message'])
             '書き込みありがとうございます。'
           else
             '書き込みの保存に失敗しました。'
