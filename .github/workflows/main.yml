@@ -1,0 +1,20 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: ssh-pipeline
+        uses: cross-the-world/ssh-pipeline@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          connect_timeout: 10s
+          script: |
+            ./tmp/wp.sh
