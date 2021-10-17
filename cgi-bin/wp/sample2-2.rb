@@ -4,7 +4,7 @@
 require 'cgi'
 cgi = CGI.new
 name = cgi['family'] + cgi['given']
-print cgi.header('text/plain; charset=utf-8')
+print cgi.header('text/html; charset=utf-8')
 print <<~HTML
   <html lang="ja">
     <body>
