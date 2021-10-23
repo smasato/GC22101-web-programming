@@ -3,7 +3,7 @@
 
 require 'cgi'
 require 'csv'
-require_relative 'lib'
+require_relative '../lib'
 
 cgi = CGI.new
 
@@ -18,7 +18,7 @@ print <<~HTML
   </head>
   <body>
   <p>メッセージをどうぞ。</p>
-  <form action=#{url('update.rb')} method="post">
+  <form action=#{url('bbs/update.rb')} method="post">
     <div>
       <label for="message">メッセージ: </label>
       <input type="text" name="message" id="message" required>
