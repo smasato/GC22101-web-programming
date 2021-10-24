@@ -3,7 +3,7 @@
 
 require 'cgi'
 require 'csv'
-require_relative '../lib'
+require_relative './lib'
 
 cgi = CGI.new
 

@@ -3,7 +3,7 @@
 
 require 'cgi'
 require 'csv'
-require_relative '../lib'
+require_relative './lib'
 
 cgi = CGI.new
 
@@ -37,7 +37,7 @@ print <<~HTML
 HTML
 
 begin
-  CSV.foreach(BBS_DATA) do |row|
+  CSV.foreach(get_filepath('bbsdata.txt')) do |row|
     print("<p>#{cgi.escapeHTML(row[1])} : #{cgi.escapeHTML(row[2])}</p>")
   end
 rescue Errno::ENOENT => e
