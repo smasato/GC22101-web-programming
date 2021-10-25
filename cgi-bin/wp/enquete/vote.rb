@@ -6,14 +6,14 @@ require 'csv'
 require_relative './lib'
 
 cgi = CGI.new
-print cgi.header('text/html; charset=utf-8')
+
 message = if cgi.request_method == 'POST' && vote(cgi.params['choices'])
             '投票ありがとうございます。'
           else
             '投票の保存に失敗しました。'
           end
 
-
+print cgi.header('text/html; charset=utf-8')
 print <<~HTML
   <!doctype html>
 

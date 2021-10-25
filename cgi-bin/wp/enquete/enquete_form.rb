@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-# encoding: utf-8
 
 require 'cgi'
-require 'csv'
 require_relative './lib'
 
-enquete = get_enquete
+enquete = load_enquete
 
 cgi = CGI.new
 
@@ -32,13 +30,14 @@ else
   enquete[:choices].each do |c|
     print <<~HTML
       <div>
-        <input type="checkbox" name="choices" value="#{cgi.escapeHTML(c.to_s)}">
+        <input type="checkbox" name="choices" value="#{cgi.escapeHTML(c)}">
         <label for="choices">#{cgi.escapeHTML(c)}</label>
       </div>
 
     HTML
   end
   print <<~HTML
+      <input type="hidden" name="hidden" value="hidden">
       <div>
         <input type="submit" value="送信">
       </div>

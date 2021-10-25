@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require 'cgi'
-require 'csv'
 require_relative './lib'
 
 cgi = CGI.new
@@ -18,10 +17,10 @@ print <<~HTML
   </head>
   <body>
   <h1>投票結果</h1>
-  <h2>#{get_enquete[:title]}</h2>
+  <h2>#{cgi.escapeHTML(load_enquete[:title])}</h2>
 HTML
 
-result = get_result
+result = load_result
 
 print('<p>投票数 = ', result.values.inject(:+), '</p>')
 print '<ul>'
