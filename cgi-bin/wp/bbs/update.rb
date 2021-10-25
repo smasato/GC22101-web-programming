@@ -3,7 +3,7 @@
 
 require 'cgi'
 require 'csv'
-require_relative 'lib'
+require_relative './lib'
 
 cgi = CGI.new
 
@@ -25,7 +25,7 @@ print <<~HTML
     </head>
     <body>
       <p>#{message}</p>
-      <a href="#{url('bbs.rb')}">1行掲示板に戻る</a>
+      <a href="#{url('bbs/bbs.rb')}">1行掲示板に戻る</a>
 HTML
 
 print <<~HTML
