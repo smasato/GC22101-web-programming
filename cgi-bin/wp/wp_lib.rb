@@ -6,9 +6,7 @@ require 'yaml'
 CONFIG = File.expand_path('config.yaml', __dir__)
 
 def fetch_config
-  if File.exist?(CONFIG)
-    YAML.load_file(CONFIG)
-  end
+  YAML.load_file(CONFIG) if File.exist?(CONFIG)
 end
 
 # local?  ->  true or false

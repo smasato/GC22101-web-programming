@@ -8,7 +8,7 @@ def load_enquete
 
   File.open(get_filepath(File.expand_path('question.txt', __dir__)), 'r:UTF-8') do |f|
     question_title = f.gets&.chomp&.strip
-    choices = f.readlines.map { |l| l.chomp.strip }.select { |c| !c.empty? }
+    choices = f.readlines.map { |l| l.chomp.strip }.reject(&:empty?)
   end
 
   return unless question_title || choices

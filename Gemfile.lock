@@ -17,6 +17,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.11.0)
+    sqlite3 (1.4.2)
     unicode-display_width (1.8.0)
 
 PLATFORMS
@@ -24,6 +25,7 @@ PLATFORMS
 
 DEPENDENCIES
   rubocop
+  sqlite3 (~> 1.4)
 
 RUBY VERSION
    ruby 2.3.1p112
