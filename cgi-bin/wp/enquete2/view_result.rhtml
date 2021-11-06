@@ -1,0 +1,28 @@
+<% require 'cgi' %>
+<% require 'erb' %>
+<% require_relative './lib' %>
+
+<% cgi = CGI.new
+   enquete = load_enquete(cgi['id'])
+%>
+
+<!doctype html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>投票結果</title>
+</head>
+<body>
+<h1>投票結果</h1>
+<h2><%= cgi.escapeHTML(enquete[:title]) %></h2>
+<% result = load_votes(cgi['id']) %>
+<p>投票数 = <%= result.values.inject(:+) %></p>
+<ul>
+  <% result.each do |k, v| %>
+    <li><%= cgi.escapeHTML(k) %>: <%= v %></li>
+  <% end %>
+</ul>
+<a href="<%= url('enquete2/enquete_form2.rb') %>">投票に戻る</a>
+</body>
+</html>
