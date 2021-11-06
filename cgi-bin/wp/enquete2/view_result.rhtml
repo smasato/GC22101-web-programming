@@ -1,6 +1,12 @@
 <% require 'cgi' %>
 <% require 'erb' %>
-<% require_relative './lib' %>
+<%
+  if __FILE__ == '(erb)'
+    require_relative '/home/s1711452/www/cgi-bin/wp/enquete2/lib.rb'
+  else
+    require_relative './lib'
+  end
+%>
 
 <% cgi = CGI.new
    enquete = load_enquete(cgi['id'])
