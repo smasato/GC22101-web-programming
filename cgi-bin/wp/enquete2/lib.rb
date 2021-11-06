@@ -15,8 +15,8 @@ def load_enquete(id)
 
   SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true) do |db|
     db.execute('select * from questions where id=? limit 1;', id) do |row|
-      question_title = row["title"]
-      choices = CSV.parse(row["choices"]).first
+      question_title = row['title']
+      choices = CSV.parse(row['choices']).first
     end
   end
 

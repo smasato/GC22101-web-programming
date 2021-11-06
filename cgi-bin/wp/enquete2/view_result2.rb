@@ -26,7 +26,7 @@ result = load_votes(cgi['id'])
 
 print('<p>投票数 = ', result.values.inject(:+), '</p>')
 print '<ul>'
-(result).each do |k, v|
+result.each do |k, v|
   print "<li>#{cgi.escapeHTML(k)}: #{v}</li>"
 end
 print '</ul>'
