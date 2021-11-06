@@ -8,25 +8,21 @@ require 'csv'
 #
 # @param [Integer] id
 #
-# @return [Hash{Symbol->String | Array}]
+# @return [Hash{Symbol->Integer | String | Array}]
 def load_enquete(id)
   question_title = String.new
   choices = []
 
-  db = SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true)
-  db.prepare('select * from questions where id=? limit 1;').execute(id) do |rows|
-    row = rows.first
-    if row.nil?
-      return nil
-    else
-      question_title = row['title']
-      choices = CSV.parse(row['choices']).first
+  SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true) do |db|
+    db.execute('select * from questions where id=? limit 1;', id) do |row|
+      question_title = row["title"]
+      choices = CSV.parse(row["choices"]).first
     end
   end
 
   return if question_title.empty? || choices.empty?
 
-  { title: question_title, choices: choices }
+  { id: id, title: question_title, choices: choices }
 end
 
 # add_enquete(title, choices)
@@ -36,7 +32,7 @@ end
 def add_enquete(title, choices)
   db = SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true)
   db.transaction do
-    db.prepare('insert into questions(title, choices) values(?, ?);').execute(title, choices.to_csv)
+    db.prepare('insert into questions(title, choices) values(?, ?);').execute(title, choices.to_csv).close
   end
 end
 
@@ -46,9 +42,8 @@ end
 def list_enquetes
   enquetes = []
 
-  db = SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true)
-  db.prepare('select id, title from questions;').execute.each do |row|
-    enquetes.push({ id: row['id'], title: row['title'] })
+  SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true) do |db|
+    db.execute('select id, title from questions;').collect { |row| enquetes.push({ id: row['id'], title: row['title'] }) }
   end
 
   enquetes
@@ -56,16 +51,34 @@ end
 
 # vote_enquete(question_id, choice) -> true or false
 # @param [Integer] question_id
-# @param [String] choice
+# @param [Array] choices
 #
 # @return [Boolean]
-def vote_enquete(question_id, choice)
-  return false unless load_enquete(question_id)['choices'].include?(choice)
+def vote_enquete(question_id, choices)
+  enquete = load_enquete(question_id)
 
-  db = SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true)
-  db.transaction do
-    db.prepare('insert into votes(question_id, choice) values(?, ?);').execute(id, choice)
+  return false if enquete.nil? || choices.empty?
+  unless (enquete[:choices] & choices.uniq).count == choices.uniq.count
+    return false
+  end
+
+  SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true) do |db|
+    db.transaction do
+      choices.each do |choice|
+        db.execute('insert into votes(question_id, choice) values(?, ?);', question_id, choice)
+      end
+    end
   end
 
   true
+end
+
+def load_votes(question_id)
+  votes = []
+  SQLite3::Database.new(get_filepath(File.expand_path('report1028.db', __dir__)), results_as_hash: true) do |db|
+    db.execute('select choice from votes where question_id=?;', question_id).collect { |row| votes.push(row['choice']) }
+  end
+  result = Hash.new(0)
+  votes.each { |v| result[v] += 1 }
+  result
 end
