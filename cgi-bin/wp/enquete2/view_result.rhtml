@@ -1,16 +1,19 @@
 <% require 'cgi' %>
 <% require 'erb' %>
 <%
-  if __FILE__ == '(erb)'
+  if Dir.pwd == '/var/www/html/' # CGIサーバーで実行されている場合は絶対パスで指定する
     require_relative '/home/s1711452/www/cgi-bin/wp/enquete2/lib.rb'
   else
-    require_relative './lib'
+    require_relative './wp/enquete2/lib.rb'
   end
 %>
-
+<% ARGV.push(servlet_request.query_string) %>
 <% cgi = CGI.new
-   enquete = load_enquete(cgi['id'])
-%>
+   if cgi['id'].empty?
+     enquete = nil
+   else
+     enquete = load_enquete(cgi['id'])
+   end %>
 
 <!doctype html>
 
@@ -21,14 +24,18 @@
 </head>
 <body>
 <h1>投票結果</h1>
-<h2><%= cgi.escapeHTML(enquete[:title]) %></h2>
-<% result = load_votes(cgi['id']) %>
-<p>投票数 = <%= result.values.inject(:+) %></p>
-<ul>
-  <% result.each do |k, v| %>
-    <li><%= cgi.escapeHTML(k) %>: <%= v %></li>
-  <% end %>
-</ul>
+<% if enquete.nil? %>
+  <p>投票を指定してください。</p>
+<% else %>
+  <h2><%= CGI.escapeHTML(enquete[:title]) %></h2>
+  <% result = load_votes(cgi['id']) %>
+  <p>投票数 = <%= result.values.inject(:+) %></p>
+  <ul>
+    <% result.each do |k, v| %>
+      <li><%= CGI.escapeHTML(k) %>: <%= v %></li>
+    <% end %>
+  </ul>
+<% end %>
 <a href="<%= url('enquete2/enquete_form2.rb') %>">投票に戻る</a>
 </body>
 </html>
