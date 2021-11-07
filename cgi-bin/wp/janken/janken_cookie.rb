@@ -40,8 +40,8 @@ HTML
 Choice::CHOICES.each_value do |c|
   print <<~HTML
     <span>
-      <input type="radio" name="choice" value="#{cgi.escapeHTML(c.str)}" required>
-      <label for="choice">#{cgi.escapeHTML(c.to_s)}</label>
+      <input type="radio" name="choice" value="#{c.str}" required>
+      <label for="choice">#{c}</label>
     </span>
   HTML
 end
