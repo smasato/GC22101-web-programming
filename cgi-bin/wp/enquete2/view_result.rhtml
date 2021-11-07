@@ -1,12 +1,10 @@
-<% require 'erb' %>
 <%
+  require 'erb'
   if Dir.pwd == '/var/www/html' # CGIサーバーで実行されている場合は絶対パスで指定する
     require_relative '/home/s1711452/www/cgi-bin/wp/enquete2/lib.rb'
   else
     require_relative './wp/enquete2/lib.rb'
   end
-%>
-<%
   enquetes = list_enquetes
 %>
 
