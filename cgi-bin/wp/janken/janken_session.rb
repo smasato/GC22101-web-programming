@@ -23,15 +23,15 @@ HTML
 
 print <<~HTML
   <h1>じゃんけん</h1>
-  <div><p>現在の勝敗: #{janken.result.win}勝　#{janken.result.lose}敗 #{janken.result.lose}分け</p></div>
+  <div><p>現在の勝敗: #{janken.result.win}勝　#{janken.result.lose}敗 #{janken.result.draw}分け</p></div>
   <span>今度の手は?</span>
       <form action="#{url('janken/judge_session.rb')}" method="post">
 HTML
-Choice::CHOICES.each do |c|
+Choice::CHOICES.each_value do |c|
   print <<~HTML
     <div>
-      <input type="radio" name="choices" value="#{cgi.escapeHTML(c.str)}" required>
-      <label for="choices">#{cgi.escapeHTML(c.str)}</label>
+      <input type="radio" name="choice" value="#{cgi.escapeHTML(c.str)}" required>
+      <label for="choice">#{cgi.escapeHTML(c.to_s)}</label>
     </div>
   HTML
 end
