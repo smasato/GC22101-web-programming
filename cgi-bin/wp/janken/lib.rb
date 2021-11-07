@@ -94,6 +94,8 @@ class Janken
   end
 
   class Result
+    attr_reader :string
+
     REGEXP_PATTERN = /(\d+)\s(\d+)\s(\d+)/.freeze
 
     def initialize(result_string = '0 0 0')
