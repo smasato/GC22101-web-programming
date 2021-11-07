@@ -5,6 +5,12 @@ require_relative '../wp_lib'
 class Choice
   attr_reader :str
 
+  DICT = {
+    rock: 'グー',
+    scissors: 'チョキ',
+    paper: 'パー'
+  }.freeze
+
   def initialize(choice)
     @str = choice
   end
@@ -27,15 +33,27 @@ class Choice
   def <(other)
     !(self > other)
   end
+
   # rubocop:enable Style/InverseMethods
+
+  def to_s
+    DICT[str.intern]
+  end
 end
 
 class Choice
   ROCK = Choice.new('rock')
   PAPER = Choice.new('paper')
   SCISSORS = Choice.new('scissors')
+  CHOICES = {
+    rock: ROCK,
+    paper: PAPER,
+    scissors: SCISSORS
+  }.freeze
 
-  CHOICES = [ROCK, PAPER, SCISSORS].freeze
+  def self.rand
+    CHOICES.values.sample
+  end
 end
 
 class Janken
@@ -46,7 +64,7 @@ class Janken
   end
 
   def game(user_choice)
-    bot = Choice::CHOICES.sample
+    bot = Choice.rand
     case judge(user_choice, bot)
     when 'win'
       @result.win += 1
@@ -55,6 +73,7 @@ class Janken
     when 'draw'
       @result.draw += 1
     end
+    bot
   end
 
   def judge(x, y)
