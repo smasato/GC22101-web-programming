@@ -1,0 +1,35 @@
+<%
+  require 'erb'
+  if Dir.pwd == '/var/www/html' # CGIサーバーで実行されている場合は絶対パスで指定する
+    require_relative '/home/s1711452/www/cgi-bin/wp/enquete2/lib.rb'
+  else
+    require_relative './wp/enquete2/lib.rb'
+  end
+  enquetes = list_enquetes
+%>
+
+<!doctype html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>投票結果</title>
+</head>
+<body>
+<h1>投票結果</h1>
+<% enquetes.each do |enquete| %>
+  <% result = load_votes(enquete[:id]) %>
+  <div>
+    <h2><%= ERB::Util.h(enquete[:title]) %></h2>
+    <p>投票数 = <%= result.values.inject(:+) || 0 %></p>
+    <ul>
+      <% result.each do |k, v| %>
+        <li><%= ERB::Util.h(k) %>: <%= v %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<a href="<%= url('enquete2/enquete_form2.rb') %>">投票に戻る</a>
+</body>
+</html>
