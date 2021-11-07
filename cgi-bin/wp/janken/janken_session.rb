@@ -7,7 +7,15 @@ require_relative './lib'
 
 cgi = CGI.new
 session = CGI::Session.new(cgi)
-janken = Janken.new(session['result'] || '0 0 0')
+if cgi.request_method == 'POST' && cgi['reset'] == 'reset'
+  session.delete
+  session = CGI::Session.new(cgi)
+end
+janken = if session['result']
+           Janken.new(result_string: session['result'])
+         else
+           Janken.new
+         end
 
 print cgi.header('text/html; charset=utf-8')
 print <<~HTML
@@ -23,7 +31,7 @@ HTML
 
 print <<~HTML
   <h1>じゃんけん</h1>
-  <div><p>現在の勝敗: #{janken.result.win}勝　#{janken.result.lose}敗 #{janken.result.draw}分け</p></div>
+  <div><p>現在の勝敗: #{janken.result}</p></div>
   <span>今度の手は?</span>
       <form action="#{url('janken/judge_session.rb')}" method="post">
 HTML
@@ -36,12 +44,11 @@ Choice::CHOICES.each_value do |c|
   HTML
 end
 print <<~HTML
-      <input type="hidden" name="hidden" value="hidden">
       <div>
         <input type="submit" value="勝負！">
       </div>
     </form>
-    <form action="#{url('janken/judge_session.rb')}" method="post">
+    <form action="#{url('janken/janken_session.rb')}" method="post">
       <input type="hidden" name="reset" value="reset">
       <input type="submit" value="勝敗をリセット">
     </form>
